@@ -1,0 +1,22 @@
+{
+  "name": "insta-likebomb",
+  "version": "1.0.0",
+  "description": "Instagram bot to explode like-bomb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "commit": "git-cz"
+  },
+  "author": "Suresh Murali",
+  "license": "ISC",
+  "dependencies": {
+    "commitizen": "^3.0.2",
+    "emoji-cz": "^0.3.0",
+    "puppeteer": "^1.9.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}
