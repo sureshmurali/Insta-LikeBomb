@@ -45,30 +45,56 @@ const {
   // Wait for first post modal to load
   await page.waitForSelector('button.ckWGn');
   for (let i = 0; i < 6; i += 1) {
-    let photoLink = '';
-    funcs = [];
-    await page.evaluate(() => {
+    // Check if photo already liked
+    console.log('Check if photo already liked');
+    const photoLiked = await page.evaluate(() => {
       const likeStatus = (document.querySelector('button.coreSpriteHeartOpen span').getAttribute('aria-label') === 'Like');
       if (likeStatus) {
-        console.log('<3');
         document.querySelector('button.coreSpriteHeartOpen').click();
+        return true;
+      }
+      return false;
+    });
+    if (photoLiked) {
+      console.log(`Post ${i + 1}: Liked`);
+    } else {
+      console.log(`Post ${i + 1}: already liked`);
+    }
+
+    // Get current photo link to make sure it gets replaced with new one
+    console.log('Starting to scrape media link');
+    let mediaLink = '';
+    await page.evaluate(() => {
+      if (document.querySelector('article.M9sTE img.FFVAD')) {
+        mediaLink = document.querySelector('article.M9sTE img.FFVAD').getAttribute('srcset');
+      } else if (document.querySelector('article.M9sTE video.tWeCl')) {
+        mediaLink = document.querySelector('article.M9sTE video.tWeCl').getAttribute('src');
       } else {
-        console.log('Photo already liked');
+        console.log('ERROR: Photo/Video not found after like press');
       }
     });
+    console.log('Media link fetched successfully');
 
-    await page.evaluate(() => {
-    // console.log(document.querySelector('article.M9sTE img.FFVAD').getAttribute('srcset'));
-      photoLink = document.querySelector('article.M9sTE img.FFVAD').getAttribute('srcset');
-    });
+    // Check if next post arrow nav button available
+    console.log('Check if next post arrow nav button available');
     const nextPostAvailable = await page.evaluate(() => !!(document.querySelector('a.coreSpriteRightPaginationArrow')));
-    console.log('Out', nextPostAvailable);
     if (nextPostAvailable) {
+      // Render next post by clicking arrow nav button
       await page.evaluate(() => {
         document.querySelector('a.coreSpriteRightPaginationArrow').click();
       });
-      await page.waitFor(() => photoLink !== document.querySelector('article.M9sTE img.FFVAD').getAttribute('srcset'));
+      //  Wait for render
+      try {
+        await page.waitFor(() => (
+          mediaLink !== document.querySelector('article.M9sTE img.FFVAD').getAttribute('srcset')
+        ));
+      } catch (error) {
+        await page.waitFor(() => (
+          (mediaLink !== document.querySelector('article.M9sTE video.tWeCl').getAttribute('src'))
+        ));
+      }
     } else {
+      console.log('Finish');
       await browser.close();
     }
   }
