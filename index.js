@@ -61,38 +61,24 @@ const {
       console.log(`Post ${i + 1}: already liked`);
     }
 
-    // Get current photo link to make sure it gets replaced with new one
-    console.log('Starting to scrape media link');
-    let mediaLink = '';
+    let nextPostLink = '';
     await page.evaluate(() => {
-      if (document.querySelector('article.M9sTE img.FFVAD')) {
-        mediaLink = document.querySelector('article.M9sTE img.FFVAD').getAttribute('srcset');
-      } else if (document.querySelector('article.M9sTE video.tWeCl')) {
-        mediaLink = document.querySelector('article.M9sTE video.tWeCl').getAttribute('src');
-      } else {
-        console.log('ERROR: Photo/Video not found after like press');
+      if (document.querySelector('a.coreSpriteRightPaginationArrow')) {
+        nextPostLink = document.querySelector('a.coreSpriteRightPaginationArrow').getAttribute('href');
+        document.querySelector('a.coreSpriteRightPaginationArrow').click();
       }
     });
-    console.log('Media link fetched successfully');
+    console.log('nextPostLink: ', nextPostLink);
+    console.log('Fetched next post link & Clicked next button');
 
-    // Check if next post arrow nav button available
-    console.log('Check if next post arrow nav button available');
     const nextPostAvailable = await page.evaluate(() => !!(document.querySelector('a.coreSpriteRightPaginationArrow')));
     if (nextPostAvailable) {
-      // Render next post by clicking arrow nav button
-      await page.evaluate(() => {
-        document.querySelector('a.coreSpriteRightPaginationArrow').click();
-      });
       //  Wait for render
-      try {
-        await page.waitFor(() => (
-          mediaLink !== document.querySelector('article.M9sTE img.FFVAD').getAttribute('srcset')
-        ));
-      } catch (error) {
-        await page.waitFor(() => (
-          (mediaLink !== document.querySelector('article.M9sTE video.tWeCl').getAttribute('src'))
-        ));
-      }
+      console.log('Wait for render');
+      await page.waitFor(() => (
+        nextPostLink !== document.querySelector('a.coreSpriteRightPaginationArrow').getAttribute('href')
+      ));
+      console.log('Render completed');
     } else {
       console.log('Finish');
       await browser.close();
