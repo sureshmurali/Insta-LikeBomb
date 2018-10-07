@@ -11,7 +11,7 @@ const {
   const browser = await puppeteer.launch({
     headless: false,
     args: ['--window-size=1280,1000'],
-    slowMo: 10,
+    slowMo: 3,
   });
   const page = await browser.newPage();
   page.setViewport({ width: 1280, height: 720 });
@@ -24,6 +24,23 @@ const {
   });
   await page.waitForNavigation();
   await page.goto(`https://www.instagram.com/${INSTA_LIKEBOMB_VICTIM_ID}/`);
+  page.on('console', consoleObj => console.log(consoleObj._text));
+  await page.evaluate(() => {
+    const posts = document.getElementsByClassName('eLAPa');
+    console.log(`No. of posts scraped: ${posts.length}`);
+    posts[0].click();
+  });
+  await page.waitForSelector('button.ckWGn');
+  await page.evaluate(() => {
+    const likeStatus = (document.querySelector('button.coreSpriteHeartOpen span').getAttribute('aria-label') === 'Like');
+    if (likeStatus) {
+      document.querySelector('button.coreSpriteHeartOpen').click();
+    }
+  });
+  await page.waitFor(2000);
+  await page.evaluate(() => {
+    document.querySelector('button.ckWGn').click();
+  });
   await page.waitFor(2000);
   await browser.close();
 })();
