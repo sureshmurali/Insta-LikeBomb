@@ -38,6 +38,13 @@ const {
   // Debug logs
   page.on('console', consoleObj => console.log(consoleObj._text));
 
+  const postAvailable = await page.evaluate(() => !!(document.getElementsByClassName('eLAPa').length));
+  if (!postAvailable) {
+    console.log(`${INSTA_LIKEBOMB_VICTIM_ID} : Private account (or) No posts available`);
+    await browser.close();
+    process.exit(0);
+  }
+
   // Open first post
   await page.evaluate(() => {
     const posts = document.getElementsByClassName('eLAPa');
