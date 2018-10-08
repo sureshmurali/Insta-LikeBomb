@@ -31,7 +31,9 @@ const {
   await page.waitForNavigation();
 
   // Go to victim page
-  await page.goto(`https://www.instagram.com/${INSTA_LIKEBOMB_VICTIM_ID}/`);
+  await page.goto(`https://www.instagram.com/${INSTA_LIKEBOMB_VICTIM_ID}/`, {
+    waitUntil: 'networkidle0',
+  });
 
   // Debug logs
   page.on('console', consoleObj => console.log(consoleObj._text));
