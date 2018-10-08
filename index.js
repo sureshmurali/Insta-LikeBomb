@@ -53,6 +53,7 @@ const {
   // Wait for first post modal to load
   await page.waitForSelector('button.ckWGn');
   let i = 1;
+  let likePressCount = 0;
   let nextPostAvailable = true;
   do {
     // Check if photo already liked
@@ -66,12 +67,16 @@ const {
       return false;
     });
     if (photoLiked) {
-      console.log(`Post ${i}: Liked`);
+      console.log(`Post ${i}: Liked now`);
+      likePressCount += 1;
     } else {
       console.log(`Post ${i}: already liked`);
     }
     i += 1;
-
+    if (likePressCount % 100 === 0) {
+      console.log('100 like limit over. Wait for 30 seconds');
+      page.waitFor(30000);
+    }
     let nextPostLink = '';
     await page.evaluate(() => {
       if (document.querySelector('a.coreSpriteRightPaginationArrow')) {
