@@ -12,7 +12,6 @@ const {
   const browser = await puppeteer.launch({
     headless: false,
     args: ['--window-size=1280,1000'],
-    slowMo: 0,
   });
   const page = await browser.newPage();
   page.setViewport({ width: 1280, height: 720 });
@@ -44,10 +43,12 @@ const {
   });
   // Wait for first post modal to load
   await page.waitForSelector('button.ckWGn');
-  for (let i = 0; i < 6; i += 1) {
+  let i = 1;
+  let nextPostAvailable = true;
+  do {
     // Check if photo already liked
     console.log('Check if photo already liked');
-    const photoLiked = await page.evaluate(() => {
+    let photoLiked = await page.evaluate(() => {
       const likeStatus = (document.querySelector('button.coreSpriteHeartOpen span').getAttribute('aria-label') === 'Like');
       if (likeStatus) {
         document.querySelector('button.coreSpriteHeartOpen').click();
@@ -56,10 +57,11 @@ const {
       return false;
     });
     if (photoLiked) {
-      console.log(`Post ${i + 1}: Liked`);
+      console.log(`Post ${i}: Liked`);
     } else {
-      console.log(`Post ${i + 1}: already liked`);
+      console.log(`Post ${i}: already liked`);
     }
+    i += 1;
 
     let nextPostLink = '';
     await page.evaluate(() => {
@@ -71,17 +73,29 @@ const {
     console.log('nextPostLink: ', nextPostLink);
     console.log('Fetched next post link & Clicked next button');
 
-    const nextPostAvailable = await page.evaluate(() => !!(document.querySelector('a.coreSpriteRightPaginationArrow')));
-    if (nextPostAvailable) {
-      //  Wait for render
-      console.log('Wait for render');
+    console.log('Wait for render');
+    try {
       await page.waitFor(() => (
         nextPostLink !== document.querySelector('a.coreSpriteRightPaginationArrow').getAttribute('href')
       ));
       console.log('Render completed');
-    } else {
+    } catch (error) {
+      nextPostAvailable = false;
+      photoLiked = await page.evaluate(() => {
+        const likeStatus = (document.querySelector('button.coreSpriteHeartOpen span').getAttribute('aria-label') === 'Like');
+        if (likeStatus) {
+          document.querySelector('button.coreSpriteHeartOpen').click();
+          return true;
+        }
+        return false;
+      });
+      if (photoLiked) {
+        console.log(`Post ${i}: Liked`);
+      } else {
+        console.log(`Post ${i}: already liked`);
+      }
       console.log('Finish');
       await browser.close();
     }
-  }
+  } while (nextPostAvailable);
 })();
