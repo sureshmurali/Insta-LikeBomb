@@ -1,6 +1,6 @@
 # Instagram bot - LikeBomb ❤️ 💣
 
-## Instagram bot made using puppeteer to like all posts of a given user
+## Instagram bot to like all posts of a given user
 
 [![PPTR badge](https://img.shields.io/badge/powered%20by-puppeteer-46aef7.svg)](https://pptr.dev) [![Node badge](https://img.shields.io/badge/node-10.6.0-brightgreen.svg)](https://nodejs.org/en/)
 
