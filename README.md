@@ -4,6 +4,8 @@
 
 [![PPTR badge](https://img.shields.io/badge/powered%20by-puppeteer-46aef7.svg)](https://pptr.dev) [![Node badge](https://img.shields.io/badge/node-10.6.0-brightgreen.svg)](https://nodejs.org/en/)
 
+![rolalike](https://user-images.githubusercontent.com/8108361/46649458-f51c6800-cb4d-11e8-8abe-1c9f2774bf7e.gif)
+
 ## Steps to use the bot
 
 1. Download Node.js >= 10.6.0 and install it
