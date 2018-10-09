@@ -57,7 +57,6 @@ const {
   let nextPostAvailable = true;
   do {
     // Check if photo already liked
-    console.log('Check if photo already liked');
     let photoLiked = await page.evaluate(() => {
       const likeStatus = (document.querySelector('button.coreSpriteHeartOpen span').getAttribute('aria-label') === 'Like');
       if (likeStatus) {
@@ -74,8 +73,8 @@ const {
     }
     i += 1;
     if (likePressCount % 100 === 0) {
-      console.log('100 like limit over. Wait for 30 seconds');
-      page.waitFor(30000);
+      console.log('100 like API call limit over. Wait for 5 minutes.');
+      await page.waitFor(5 * 60000);
     }
     let nextPostLink = '';
     await page.evaluate(() => {
@@ -84,15 +83,10 @@ const {
         document.querySelector('a.coreSpriteRightPaginationArrow').click();
       }
     });
-    console.log('nextPostLink: ', nextPostLink);
-    console.log('Fetched next post link & Clicked next button');
-
-    console.log('Wait for render');
     try {
       await page.waitFor(() => (
         nextPostLink !== document.querySelector('a.coreSpriteRightPaginationArrow').getAttribute('href')
       ));
-      console.log('Render completed');
     } catch (error) {
       nextPostAvailable = false;
       photoLiked = await page.evaluate(() => {
@@ -104,7 +98,7 @@ const {
         return false;
       });
       if (photoLiked) {
-        console.log(`Post ${i}: Liked`);
+        console.log(`Post ${i}: Liked now`);
       } else {
         console.log(`Post ${i}: already liked`);
       }
