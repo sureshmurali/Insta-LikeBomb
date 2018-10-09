@@ -10,7 +10,7 @@
 2. Git clone or Download zip
 3. Run `npm install` inside Insta-LikeBomb folder
 4. Rename `.env_temp` to `.env`
-5. Write your credentials in `INSTA_USERNAME` (without @ symbol) and `INSTA_PASSWORD`
+5. Open .env file and write your credentials in `INSTA_USERNAME` (without @ symbol) and `INSTA_PASSWORD`
 6. Write your friend's Instagram username (without @ symbol) to like all his/her posts
 7. Run `npm run start` to start the bot
 
@@ -25,7 +25,6 @@ const browser = await puppeteer.launch({
 ```
 
 ## LICENSE
-
 
 The MIT License (MIT)
 
