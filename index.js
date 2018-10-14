@@ -26,7 +26,7 @@ const {
   await page.type('[name=username]', INSTA_USERNAME);
   await page.type('[name=password]', INSTA_PASSWORD);
   await page.evaluate(() => {
-    document.querySelector('.oF4XW').click();
+    document.querySelector('.L3NKy').click();
   });
   await page.waitForNavigation();
 
