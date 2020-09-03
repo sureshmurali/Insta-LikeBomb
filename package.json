@@ -14,7 +14,7 @@
     "commitizen": "^3.0.2",
     "dotenv": "^6.0.0",
     "emoji-cz": "^0.3.0",
-    "puppeteer": "^1.9.0"
+    "puppeteer": "^1.13.0"
   },
   "devDependencies": {
     "eslint": "^5.6.1",
